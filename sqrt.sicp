@@ -1,0 +1,86 @@
+(define (square x)
+		(* x x)
+)
+
+; sqrt x: 
+
+(define (sqrt-iter guess x)
+		(
+			if(goodenough? guess x)
+			guess
+			(sqrt-iter (improve guess x) x)
+		)
+)		
+		
+(define (improve guess x)	; (x/guess + guess ) /2
+		(
+			/ (+ (/ x guess) guess) 2
+		)
+)
+
+(define (goodenough? guess x)
+		(
+			< (abs (- (square guess) x)) 0.00001
+		)
+)
+
+(define (my_sqrt x)
+		(
+			sqrt-iter 1.0 x
+		)
+)
+
+; for use
+(my_sqrt 9)
+(my_sqrt 16)
+(my_sqrt 25)
+
+; use new-if replace if
+(define (new-if predicate then-clause else-clause)
+		(
+			cond (predicate then-clause)
+				 (else else-clause)
+		)
+)
+
+(define (sqrt-iter2 guess x)
+		(
+			new-if(goodenough? guess x)
+			guess
+			(sqrt-iter2 (improve guess x) x)
+		)
+)
+
+(define (my_sqrt2 x)
+		(
+			sqrt-iter2 1.0 x
+		)
+)
+
+; use
+;(my_sqrt2 9)	;cause error
+
+; change goodenough? to make useful for small number
+(define (good-enough? last-guess this-guess x)
+		(
+			and
+			(< (/ (abs (- last-guess this-guess)) last-guess) 0.00001)
+			(< (abs (- (* this-guess this-guess) x)) 0.00001)
+		)
+)
+
+(define (sqrt-iter3 last-guess this-guess x)
+		(
+			if(good-enough? last-guess this-guess x)
+			this-guess
+			(sqrt-iter3 this-guess (improve this-guess x) x)
+		)
+)
+
+(define (my_sqrt3 x)
+		(
+			sqrt-iter3 x 1.0 x
+		)
+)
+
+(my_sqrt3 0.00000000001)
